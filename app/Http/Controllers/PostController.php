@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -66,6 +67,12 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        if (Gate::denies('delete',$post)){
+            return response()->json([
+                'message'=>'not owner'
+            ],403);
+        }
+        $post->delete();
+        return response()->json(['message'=>'deleted'],204);
     }
 }

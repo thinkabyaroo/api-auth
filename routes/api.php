@@ -15,8 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\AuthController;
-Route::apiResource('post',\App\Http\Controllers\PostController::class)->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::apiResource('post',\App\Http\Controllers\PostController::class);
 
+    Route::get("only-4",function (){
+        return "allow only four";
+    })->middleware(["fourOnly"]);
+});
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
-Route::post('logout',[AuthController::class,'logout']);
+Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
